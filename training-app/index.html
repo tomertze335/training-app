@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="he">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Prompt Trainer</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="drawer-shell">
+    <aside class="drawer" id="drawer">
+      <div class="drawer-brand">
+        <div class="drawer-icon">🧠</div>
+        <div>
+          <p class="drawer-title">Prompt Trainer</p>
+          <p class="drawer-subtitle">Consult · Copy · Learn</p>
+        </div>
+      </div>
+
+      <nav class="drawer-nav" aria-label="ניווט ראשי">
+        <button type="button" data-tab="dashboard" class="drawer-link active"><span class="icon">🏠</span> דשבורד</button>
+        <button type="button" data-tab="trainer" class="drawer-link"><span class="icon">📘</span> מאמן</button>
+        <button type="button" data-tab="prompts" class="drawer-link"><span class="icon">💡</span> פרומפטים</button>
+        <button type="button" data-tab="plan" class="drawer-link"><span class="icon">🗂️</span> תוכנית</button>
+      </nav>
+    </aside>
+
+    <div class="content-shell">
+      <header class="page-header">
+        <button type="button" id="drawer-toggle" class="drawer-toggle" aria-label="פתח תפריט">☰</button>
+        <div>
+          <p class="eyebrow">יישום פרומפטים</p>
+          <h1>Prompt Trainer</h1>
+        </div>
+        <div class="status-chip">White theme</div>
+      </header>
+
+      <main class="page-main">
+        <div class="tabs" role="tablist" aria-label="תפריט תוכן">
+          <button type="button" role="tab" data-tab="dashboard" class="tab active">Dashboard</button>
+          <button type="button" role="tab" data-tab="trainer" class="tab">Trainer</button>
+          <button type="button" role="tab" data-tab="prompts" class="tab">Prompts</button>
+          <button type="button" role="tab" data-tab="plan" class="tab">Plan</button>
+        </div>
+
+        <section id="tab-content" class="tab-content"></section>
+      </main>
+    </div>
+  </div>
+
+  <script type="module" src="scripts/app.js"></script>
+</body>
+</html>
