@@ -13,6 +13,14 @@
 - `scripts/data.js` - נתוני המוצר, מאמן, פרומפטים ותוכנית.
 - `scripts/ui.js` - רינדור דינמי של הטאבים והתוכן.
 - `scripts/app.js` - התחלת היישום והגדרת האירועים.
+ - `scripts/tests/test-runner.html` - דף בדיקות אוטומטי בדפדפן.
+
+## בדיקות
+פתח את `scripts/tests/test-runner.html` עם Live Server כדי להריץ בדיקות UI פשוטות (העתקה וטאבים).
+
+## פריסה ל־GitHub Pages
+כל שינוי שנדחף לענף `main` יפעיל את ה־Workflow המוגדר ב־`.github/workflows/gh-pages.yml` ויפרס את תוכן התיקייה `training-app/` לענף `gh-pages`.
+ודא שלענף הראשי יש שם `main` וה־Action יפעל אוטומטית.
 
 ## תכנים חדשים
 - Drawer ניווט צדדי עם אייקונים.

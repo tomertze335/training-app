@@ -41,10 +41,15 @@ function renderDashboard(container) {
 }
 
 function renderTrainer(container) {
+  // Interactive trainer with checklist saved to localStorage
+  const storageKey = "trainer.checklist.v1";
+  const saved = JSON.parse(localStorage.getItem(storageKey) || "null");
+  const checklist = saved || projectInfo.plan.map((p) => ({ id: p.phase, title: p.title, done: false }));
+
   container.innerHTML = `
     <div class="card">
       ${buildSectionTitle("🧭", "מאמן")}
-      <p>קטע זה מסביר איך להשתמש ביישום כדי לייעץ, ליצור פרומפטים ולהעתיק אותם בקלות.</p>
+      <p>השתמש ברשימת המשימות למטה כדי לעקוב אחרי השלבים, לשמור התקדמות ולחזור אליהם מאוחר יותר.</p>
     </div>
     <div class="card">
       <div class="card-grid">
@@ -59,7 +64,52 @@ function renderTrainer(container) {
           .join("")}
       </div>
     </div>
+    <div class="card">
+      ${buildSectionTitle("✅", "רשימת משימות - מעקב")}
+      <div id="trainer-checklist"></div>
+      <div style="margin-top:12px;display:flex;gap:8px;justify-content:flex-end;">
+        <button id="save-checklist" class="copy-button">שמור</button>
+        <button id="clear-checklist" class="copy-button">נקה</button>
+      </div>
+    </div>
   `;
+
+  const listContainer = container.querySelector("#trainer-checklist");
+
+  function renderChecklist() {
+    listContainer.innerHTML = checklist
+      .map(
+        (item, idx) => `
+          <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px dashed #eef4fb;">
+            <input type="checkbox" id="chk-${idx}" data-idx="${idx}" ${item.done ? "checked" : ""} />
+            <label for="chk-${idx}">${item.title}</label>
+          </div>`
+      )
+      .join("");
+
+    // attach handlers
+    listContainer.querySelectorAll("input[type=checkbox]").forEach((cb) => {
+      cb.addEventListener("change", (e) => {
+        const idx = Number(cb.dataset.idx);
+        checklist[idx].done = cb.checked;
+      });
+    });
+  }
+
+  renderChecklist();
+
+  container.querySelector("#save-checklist").addEventListener("click", () => {
+    localStorage.setItem(storageKey, JSON.stringify(checklist));
+    const btn = container.querySelector("#save-checklist");
+    btn.textContent = "נשמר";
+    setTimeout(() => (btn.textContent = "שמור"), 900);
+  });
+
+  container.querySelector("#clear-checklist").addEventListener("click", () => {
+    checklist.forEach((it) => (it.done = false));
+    localStorage.removeItem(storageKey);
+    renderChecklist();
+  });
 }
 
 function renderPrompts(container) {
