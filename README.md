@@ -1,7 +1,7 @@
 # Prompt Trainer
 
 כלי אינטראקטיבי פשוט לייעוץ ופרומפטים מוכנים ל־AI.
-
+ 
 ## הפעלה
 1. פתח את תיקיית `training-app` ב־VS Code.
 2. פתח את `index.html` עם Live Server.
