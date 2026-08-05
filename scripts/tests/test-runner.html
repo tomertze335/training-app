@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Prompt Trainer - Test Runner</title>
+    <style>body{font-family:Arial,Helvetica,sans-serif;padding:18px;background:#f5f7fb;color:#102a43} .pass{color:green}.fail{color:#c53030}</style>
+  </head>
+  <body>
+    <h1>בדיקות אוטומטיות - Prompt Trainer</h1>
+    <div id="results"></div>
+
+    <script>
+      // capture clipboard writes
+      let lastCopied = null;
+      window.navigator.clipboard = window.navigator.clipboard || {};
+      window.navigator.clipboard.writeText = async (text) => {
+        lastCopied = text;
+        return Promise.resolve();
+      };
+
+      // load the app module
+      const script = document.createElement('script');
+      script.type = 'module';
+      script.src = '/scripts/app.js';
+      document.body.appendChild(script);
+
+      // wait for app to initialize then run tests
+      window.addEventListener('DOMContentLoaded', () => {
+        setTimeout(runTests, 700);
+      });
+
+      async function runTests() {
+        const results = [];
+
+        // Test 1: default tab loaded
+        const tabContent = document.getElementById('tab-content');
+        results.push({ name: 'טאב ראשי נטען', ok: !!tabContent && tabContent.innerHTML.trim().length > 0 });
+
+        // Test 2: switch to prompts and copy first
+        document.querySelectorAll('.tab').forEach(b=> { if(b.dataset.tab==='prompts') b.click(); });
+        await new Promise(r=>setTimeout(r,300));
+        const firstCopy = document.querySelector('#prompts-tbody .copy-button');
+        if(firstCopy){ firstCopy.click(); await new Promise(r=>setTimeout(r,200)); }
+        const preview = document.getElementById('prompt-preview');
+        results.push({ name: 'העתקת פרומפט בודד', ok: !!lastCopied && lastCopied.length>10 && preview && preview.textContent.trim().length>0 });
+
+        // Test 3: copy all
+        const copyAll = document.getElementById('copy-all');
+        if(copyAll){ copyAll.click(); await new Promise(r=>setTimeout(r,300)); }
+        results.push({ name: 'העתקת כל הפרומפטים', ok: !!lastCopied && lastCopied.includes('#') });
+
+        // show results
+        const out = document.getElementById('results');
+        results.forEach(r=>{
+          const el = document.createElement('div');
+          el.innerHTML = `${r.ok?'<span class="pass">✔</span>':'<span class="fail">✖</span>'} ${r.name}`;
+          out.appendChild(el);
+        });
+      }
+    </script>
+  </body>
+</html>
