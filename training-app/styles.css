@@ -205,6 +205,46 @@ h1 {
   margin-top: 0;
 }
 
+.prompt-form-grid {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: 1fr 1fr;
+}
+
+.prompt-form-grid label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  color: #334155;
+}
+
+.prompt-textarea {
+  min-height: 120px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid #e6eef8;
+  resize: vertical;
+  background: #ffffff;
+  color: #102a43;
+}
+
+.prompts-table td:last-child,
+.prompts-table th:last-child {
+  width: 210px;
+}
+
+.prompt-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.prompts-table button {
+  padding: 8px 10px;
+  font-size: 0.92rem;
+}
+
 .card p {
   color: #475569;
 }
@@ -316,5 +356,14 @@ h1 {
 
   .grid-2 {
     grid-template-columns: 1fr;
+  }
+
+  .prompt-form-grid {
+    display: grid;
+    gap: 12px;
+  }
+
+  .prompt-form-grid label {
+    width: 100%;
   }
 }
