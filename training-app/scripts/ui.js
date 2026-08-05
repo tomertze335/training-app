@@ -66,9 +66,21 @@ function renderPrompts(container) {
   container.innerHTML = `
     <div class="card">
       ${buildSectionTitle("📋", "פרומפטים מוכנים")}
-      <p>בחר פרומפט, ונדאג שתוכל להעתיק אותו ישירות ללוח.</p>
+      <p>בחר פרומפט, חפש או סנן לפי קטגוריה, והעתק בקליק.</p>
     </div>
+
     <div class="card">
+      <div class="toolbar" style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">
+        <input id="prompt-search" class="search-input" placeholder="חפש פרומפט או כותרת..." />
+        <select id="prompt-category">
+          <option value="">הכל</option>
+          ${[...new Set(projectInfo.prompts.map((p) => p.category))]
+            .map((c) => `<option value="${c}">${c}</option>`)
+            .join("")}
+        </select>
+        <button id="copy-all" class="copy-button">העתק הכל</button>
+      </div>
+
       <table class="prompts-table">
         <thead>
           <tr>
@@ -78,40 +90,92 @@ function renderPrompts(container) {
             <th>פעולה</th>
           </tr>
         </thead>
-        <tbody>
-          ${projectInfo.prompts
-            .map(
-              (prompt) => `
-            <tr>
-              <td>${prompt.icon}</td>
-              <td>${prompt.category}</td>
-              <td>${prompt.title}</td>
-              <td><button type="button" class="copy-button" data-prompt-id="${prompt.id}">העתק</button></td>
-            </tr>`
-            )
-            .join("")}
-        </tbody>
+        <tbody id="prompts-tbody"></tbody>
       </table>
     </div>
+
     <div class="card">
       <h3>פרומפט פעיל</h3>
       <p id="prompt-preview">בחר שורה בטבלה כדי לראות את הטקסט כאן.</p>
     </div>
   `;
 
-  const copyButtons = container.querySelectorAll(".copy-button");
+  const search = container.querySelector("#prompt-search");
+  const category = container.querySelector("#prompt-category");
+  const tbody = container.querySelector("#prompts-tbody");
   const preview = container.querySelector("#prompt-preview");
+  const copyAllBtn = container.querySelector("#copy-all");
 
-  copyButtons.forEach((button) => {
-    button.addEventListener("click", () => {
-      const prompt = projectInfo.prompts.find((item) => item.id === button.dataset.promptId);
-      if (!prompt) return;
-      navigator.clipboard.writeText(prompt.content).then(() => {
-        preview.textContent = prompt.content;
-        copyButtons.forEach((btn) => btn.classList.remove("active"));
-        button.classList.add("active");
+  function renderTableRows(filterText = "", filterCategory = "") {
+    const text = filterText.trim().toLowerCase();
+    const rows = projectInfo.prompts
+      .filter((p) => (filterCategory ? p.category === filterCategory : true))
+      .filter((p) => (text ? (p.title + p.content + p.category).toLowerCase().includes(text) : true))
+      .map(
+        (prompt) => `
+          <tr data-id="${prompt.id}">
+            <td>${prompt.icon}</td>
+            <td>${prompt.category}</td>
+            <td>${prompt.title}</td>
+            <td><button type="button" class="copy-button" data-prompt-id="${prompt.id}">העתק</button></td>
+          </tr>`
+      )
+      .join("");
+
+    tbody.innerHTML = rows || '<tr><td colspan="4">לא נמצאו פרומפטים</td></tr>';
+
+    // attach listeners
+    const buttons = tbody.querySelectorAll(".copy-button");
+    buttons.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const id = btn.dataset.promptId;
+        const prompt = projectInfo.prompts.find((p) => p.id === id);
+        if (!prompt) return;
+        navigator.clipboard.writeText(prompt.content).then(() => {
+          preview.textContent = prompt.content;
+          tbody.querySelectorAll(".copy-button").forEach((b) => b.classList.remove("active"));
+          btn.classList.add("active");
+        });
       });
     });
+
+    // row click shows preview
+    tbody.querySelectorAll("tr[data-id]").forEach((row) => {
+      row.addEventListener("click", (e) => {
+        // avoid firing when button clicked
+        if (e.target.closest("button")) return;
+        const id = row.dataset.id;
+        const prompt = projectInfo.prompts.find((p) => p.id === id);
+        if (prompt) preview.textContent = prompt.content;
+      });
+    });
+  }
+
+  // initial render
+  renderTableRows();
+
+  // filters
+  search.addEventListener("input", () => renderTableRows(search.value, category.value));
+  category.addEventListener("change", () => renderTableRows(search.value, category.value));
+
+  // copy all filtered
+  copyAllBtn.addEventListener("click", async () => {
+    const text = projectInfo.prompts
+      .filter((p) => (category.value ? p.category === category.value : true))
+      .filter((p) => (search.value ? (p.title + p.content + p.category).toLowerCase().includes(search.value.trim().toLowerCase()) : true))
+      .map((p) => `# ${p.title}\n${p.content}`)
+      .join("\n\n");
+    try {
+      await navigator.clipboard.writeText(text);
+      copyAllBtn.textContent = "הועתק!";
+      copyAllBtn.classList.add("active");
+      setTimeout(() => {
+        copyAllBtn.textContent = "העתק הכל";
+        copyAllBtn.classList.remove("active");
+      }, 1200);
+    } catch (err) {
+      console.error(err);
+    }
   });
 }
 

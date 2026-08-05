@@ -162,6 +162,34 @@ h1 {
   gap: 18px;
 }
 
+.toolbar {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.search-input {
+  flex: 1 1 320px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid #e6eef8;
+  background: #ffffff;
+  color: #102a43;
+}
+
+.copy-button {
+  border: 1px solid #dbeafe;
+  background: #eff6ff;
+  width: 100%;
+  max-width: 120px;
+  padding: 10px 12px;
+}
+
+.copy-button.active {
+  background: #d1fae5;
+  border-color: #86efac;
+}
+
 .card {
   background: #ffffff;
   border: 1px solid #e2e8f0;

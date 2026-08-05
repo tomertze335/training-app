@@ -58,6 +58,20 @@ const projectInfo = {
       title: "Prompt להרחבת מוצר",
       content: "תאר שלושה רעיונות לשיפור חוויית המשתמש באמצעות AI, כולל מדדי ביצוע ברורים.",
     },
+    {
+      id: "prompt-5",
+      icon: "🔍",
+      category: "Research",
+      title: "Prompt לביצוע מחקר שוק קצר",
+      content: "בקש תמצית של שוק היעד, המתחרים המרכזיים וההזדמנויות העיקריות בפסקה קצרה.",
+    },
+    {
+      id: "prompt-6",
+      icon: "🧪",
+      category: "Experiment",
+      title: "Prompt לניסוח ניסויים A/B",
+      content: "הצע שלוש גרסאות ניסוי לשינוי פיצ'ר מרכזי והסבר מדד הצלחה לכל גרסה.",
+    },
   ],
   plan: [
     {
